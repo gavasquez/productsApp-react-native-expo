@@ -6,6 +6,7 @@ import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { StackNavigator } from './presentation/navigation/StackNavigation';
 import { useColorScheme } from 'react-native';
+import { AuthProvider } from './presentation/providers/AuthProvider';
 
 
 export const ProductsApp = () => {
@@ -30,7 +31,9 @@ export const ProductsApp = () => {
           },
           fonts: DefaultTheme.fonts
         } }>
-          <StackNavigator />
+          <AuthProvider>
+            <StackNavigator />
+          </AuthProvider>
         </NavigationContainer>
       </ApplicationProvider>
     </>

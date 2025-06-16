@@ -27,7 +27,7 @@ const fadeAnimation: StackCardStyleInterpolator = ( { current } ) => { // Quitar
 export const StackNavigator = () => {
   return (
     <Stack.Navigator
-      initialRouteName="LoginScreen"
+      initialRouteName="LoadingScreen"
       screenOptions={ {
         headerShown: false,
         //cardStyleInterpolator: fadeAnimation, => Quitar de manera global
