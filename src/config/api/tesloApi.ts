@@ -5,8 +5,6 @@ import { StorageAdapter } from '../adapters/storage-adapter';
 
 export const API_URL = (STAGE === 'production') ? PROD_URL : Platform.OS === 'ios' ? API_URL_IOS : API_URL_ANDROID;
 
-console.log({ API_URL});
-
 const tesloApi = axios.create({
   baseURL: API_URL_IOS,
   headers: {

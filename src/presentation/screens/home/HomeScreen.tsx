@@ -1,21 +1,30 @@
-import { Button, Icon, Layout, Text } from '@ui-kitten/components';
+import { Layout, Text } from '@ui-kitten/components';
 import { useAuthStore } from '../../store/auth/useAuthStore';
+import { getProductsByPage } from '../../../actions/products/get-products-by-page';
+import { useQuery } from '@tanstack/react-query';
+import { MainLayout } from '../../layouts/MainLayout';
+import { FullScreenLoader } from '../../components/ui/FullScreenLoader';
+import { ProducList } from '../../components/products/ProducList';
 
 
 export const HomeScreen = () => {
 
   const { logout } = useAuthStore();
+  const { isLoading, data: products = [] } = useQuery({
+    queryKey: ['products', 'infinite'],
+    staleTime: 100 * 60 * 60, // 1 hour
+    queryFn: () => getProductsByPage(0),
+  });
 
   return (
-    <Layout style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text category="h1">H1</Text>
+    <MainLayout
+      title='TesloShop - Products'
+      subTitle='Aplicación Administrativa'>
 
-      <Button
-        accessoryLeft={<Icon name="log-out-outline" />}
-        onPress={logout}
-      >
-        Cerrar sesión
-      </Button>
-    </Layout>
+      {
+        isLoading ? (<FullScreenLoader />) : (<ProducList products={products} />)
+      }
+
+    </MainLayout>
   );
 };

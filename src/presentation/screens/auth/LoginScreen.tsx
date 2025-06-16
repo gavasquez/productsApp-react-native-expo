@@ -61,7 +61,7 @@ export const LoginScreen = ( { navigation }: Props ) => {
           />
         </Layout>
 
-        <Text>{ JSON.stringify( form, null, 2 ) }</Text>
+        {/* <Text>{ JSON.stringify( form, null, 2 ) }</Text> */}
 
         {/* Space */ }
         <Layout style={ { height: 20 } } />
