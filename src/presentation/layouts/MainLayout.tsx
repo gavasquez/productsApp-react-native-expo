@@ -8,7 +8,7 @@ interface Props {
     subTitle?: string;
     rightAction?: () => void;
     rightActionIcon?: string;
-    children: React.ReactNode;
+    children?: React.ReactNode;
 }
 
 export const MainLayout = ({ title, subTitle, rightAction, children, rightActionIcon }: Props) => {
