@@ -10,6 +10,7 @@ import { FlatList } from 'react-native';
 import { FadeInImage } from '../../components/ui/FadeInImage';
 import { Gender, Size } from '../../../infrastructure/interfaces/teslo-porducts.response';
 import { MyIcon } from '../../components/ui/MyIcon';
+import { Formik } from 'formik';
 
 const sizes: Size[] = [
   Size.Xs, Size.S, Size.M, Size.L, Size.Xl, Size.Xxl
@@ -36,106 +37,122 @@ export const ProductScreen = ( { route }: Props ) => {
   }
 
   return (
-    <MainLayout title={ product.title } subTitle={ `Precio: ${ product.price }` }>
-      <ScrollView style={ { flex: 1 } }>
-        {/* Imagenes del producto */ }
-        <Layout>
-          {/* Todo: Tener en consideracion cuando no hay imagenes */ }
-          <FlatList
-            data={ product.images }
-            horizontal
-            keyExtractor={ ( item ) => item }
-            showsHorizontalScrollIndicator={ false }
-            renderItem={ ( { item } ) => (
-              <FadeInImage uri={ item } style={ { width: 300, height: 300, marginHorizontal: 7 } } />
-            ) }
-          />
-        </Layout>
-        {/* Formulario */ }
-        <Layout style={ { marginHorizontal: 10 } }>
-          <Input
-            label="Titulo"
-            value={ product.title }
-            style={ { marginVertical: 5 } }
-          />
+    <Formik
+      initialValues={ product } // Valor inicial del formulario
+      onSubmit={ value => console.log( value ) }
+    >
+      {
+        ( { handleChange, handleSubmit, values, errors, setFieldError, setFieldValue } ) => (
+          <MainLayout title={ values.title } subTitle={ `Precio: ${ values.price }` }>
+            <ScrollView style={ { flex: 1 } }>
+              {/* Imagenes del producto */ }
+              <Layout>
+                {/* Todo: Tener en consideracion cuando no hay imagenes */ }
+                <FlatList
+                  data={ values.images }
+                  horizontal
+                  keyExtractor={ ( item ) => item }
+                  showsHorizontalScrollIndicator={ false }
+                  renderItem={ ( { item } ) => (
+                    <FadeInImage uri={ item } style={ { width: 300, height: 300, marginHorizontal: 7 } } />
+                  ) }
+                />
+              </Layout>
+              {/* Formulario */ }
+              <Layout style={ { marginHorizontal: 10 } }>
+                <Input
+                  label="Titulo"
+                  style={ { marginVertical: 5 } }
+                  value={ values.title }
+                  onChangeText={ handleChange( 'title' ) }
+                />
 
-          <Input
-            label="Slug"
-            value={ product.slug }
-            style={ { marginVertical: 5 } }
-          />
+                <Input
+                  label="Slug"
+                  style={ { marginVertical: 5 } }
+                  value={ values.slug }
+                  onChangeText={ handleChange( 'slug' ) }
+                />
 
-          <Input
-            label="Descripcion"
-            value={ product.description }
-            multiline
-            numberOfLines={ 5 }
-            style={ { marginVertical: 5 } }
-          />
-        </Layout>
+                <Input
+                  label="Descripcion"
+                  multiline
+                  numberOfLines={ 5 }
+                  style={ { marginVertical: 5 } }
+                  value={ values.description }
+                  onChangeText={ handleChange( 'description' ) }
+                />
+              </Layout>
 
-        {/* Precio y Inventario */ }
-        <Layout style={ { marginHorizontal: 15, flexDirection: 'row', gap: 10, marginVertical: 5 } }>
-          <Input
-            label="Precio"
-            value={ product.price.toString() }
-            style={ { flex: 1 } }
-          />
+              {/* Precio y Inventario */ }
+              <Layout style={ { marginHorizontal: 15, flexDirection: 'row', gap: 10, marginVertical: 5 } }>
+                <Input
+                  label="Precio"
+                  style={ { flex: 1 } }
+                  value={ values.price.toString() }
+                  onChangeText={ handleChange( 'price' ) }
+                />
 
-          <Input
-            label="Inventario"
-            value={ product.stock.toString() }
-            style={ { flex: 1 } }
-          />
-        </Layout>
+                <Input
+                  label="Inventario"
+                  style={ { flex: 1 } }
+                  value={ values.stock.toString() }
+                  onChangeText={ handleChange( 'stock' ) }
+                />
+              </Layout>
 
-        {/* Selectores */ }
-        <ButtonGroup
-          style={ { margin: 2, marginTop: 20, marginHorizontal: 10 } }
-          size="small"
-          appearance="outline"
-        >
-          {
-            sizes.map( ( size ) => (
-              <Button
-                key={ size }
-                style={ { flex: 1, backgroundColor: true ? theme[ 'color-primary-200' ] : undefined } }
+              {/* Selectores */ }
+              <ButtonGroup
+                style={ { margin: 2, marginTop: 20, marginHorizontal: 10 } }
+                size="small"
+                appearance="outline"
               >
-                { size }
-              </Button>
-            ) )
-          }
-        </ButtonGroup>
+                {
+                  sizes.map( ( size ) => (
+                    <Button
+                      onPress={ () => setFieldValue( 'sizes', values.sizes.includes(size) ? values.sizes.filter( s => s !== size) : [ ...values.sizes, size ] ) }
+                      key={ size }
+                      style={ { flex: 1, backgroundColor: values.sizes.includes( size ) ? theme[ 'color-primary-200' ] : undefined } }
+                    >
+                      { size }
+                    </Button>
+                  ) )
+                }
+              </ButtonGroup>
 
-        <ButtonGroup
-          style={ { margin: 2, marginTop: 20, marginHorizontal: 10 } }
-          size="small"
-          appearance="outline"
-        >
-          {
-            genders.map( ( gender ) => (
-              <Button
-                key={ gender }
-                style={ { flex: 1, backgroundColor: true ? theme[ 'color-primary-200' ] : undefined } }
+              <ButtonGroup
+                style={ { margin: 2, marginTop: 20, marginHorizontal: 10 } }
+                size="small"
+                appearance="outline"
               >
-                { gender }
+                {
+                  genders.map( ( gender ) => (
+                    <Button
+                      onPress={ () => setFieldValue( 'gender', gender ) }
+                      key={ gender }
+                      style={ { flex: 1, backgroundColor: values.gender.startsWith( gender ) ? theme[ 'color-primary-200' ] : undefined } }
+                    >
+                      { gender }
+                    </Button>
+                  ) )
+                }
+              </ButtonGroup>
+
+              {/* Bóton de guardar */ }
+              <Button
+                accessoryLeft={ <MyIcon name="save-outline" white /> }
+                onPress={ () => { } }
+                style={ { margin: 15 } }>
+                Guardar
               </Button>
-            ) )
-          }
-        </ButtonGroup>
 
-        {/* Bóton de guardar */ }
-        <Button
-          accessoryLeft={ <MyIcon name="save-outline" white /> }
-          onPress={ () => { } }
-          style={ { margin: 15 } }>
-          Guardar
-        </Button>
+              <Text>{ JSON.stringify( values, null, 2 ) }</Text>
 
-        <Text>{ JSON.stringify( product, null, 2 ) }</Text>
-
-        <Layout style={ { height: 200 } } />
-      </ScrollView>
-    </MainLayout>
+              <Layout style={ { height: 200 } } />
+            </ScrollView>
+          </MainLayout>
+        )
+      }
+    </Formik>
   );
 };
