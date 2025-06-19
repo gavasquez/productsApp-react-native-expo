@@ -3,6 +3,7 @@ import { Product } from "../../../domain/entities/product";
 import { ProducCard } from "./ProducCard";
 import { useState } from 'react';
 import { RefreshControl } from 'react-native-gesture-handler';
+import { useQueryClient } from '@tanstack/react-query';
 
 
 interface Props {
@@ -13,12 +14,13 @@ interface Props {
 
 export const ProducList = ( { products, fetchNextPage }: Props ) => {
 
+  const queryClient = useQueryClient();
   const [isRefreshing, setIsRefreshing] = useState( false );
 
   const onPullToRefresh = async () => {
     setIsRefreshing( true );
-    // Sleep for 1,5 second
-    await new Promise( resolve => setTimeout( resolve, 1500 ) );
+    await new Promise( resolve => setTimeout( resolve, 200 ) );
+    queryClient.invalidateQueries( { queryKey: [ 'products', 'infinite' ] } );
     setIsRefreshing( false );
   }
 
